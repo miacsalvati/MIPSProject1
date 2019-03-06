@@ -1,0 +1,356 @@
+#Mia Salvati
+#Computer Languages and Translations
+#TR 12:30-1:45
+#Tu, Spring 2019
+
+	# Start .text segment (program code)
+	.text
+	
+	.globl	main
+main:
+ 
+
+	# Print string msg1
+	li	$v0,4		# print_string syscall code = 4 (same as: addi $v0, $zero, 4)
+	la	$a0, msg1	# load the address of msg
+	syscall
+
+	# Get input A from user and save
+	li	$v0,5		# read_int syscall code = 5 (same as: addi $v0, $zero, 5)
+	syscall	
+	move	$t0,$v0		# syscall results returned in $v0: move $v0 to $t0 (A)
+
+	# Print string msg2
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, msg2	# load the address of msg2
+	syscall
+
+	# Get input B from user and save
+	li	$v0,5		# read_int syscall code = 5
+	syscall	
+	move	$t1,$v0		# syscall results returned in $v0: move $v0 to $t1 (B)
+	
+	# Print string msg6
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, msg6	# load the address of msg6
+	syscall
+
+	# Enter/read an operator
+	li   	$v0, 12       	# read char (operator) syscall code $v0 = 12
+	syscall            	
+	move 	$t2, $v0	# save/copy the operator from $v0 to $t2
+	
+	
+	beq $t1, $zero, divideByZeroquestion1 #compare if dividing by zero
+	bne $t1, $zero, questionadd
+	
+	divideByZeroquestion1: 
+	beq $t2, '/', divideByZero
+	bne $t2, '/', divideByZeroquestion2
+	
+	divideByZeroquestion2: beq $t2, '%', divideByZero
+	bne $t2, '%', questionadd
+
+		
+	divideByZero:
+		# Print \n
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, newline
+	syscall
+		li	$v0,4		# print_string syscall code = 4
+		la	$a0, msg4	# load the address of msg4
+		syscall
+		li	$v0,10		# exit call
+		syscall
+	
+	questionadd: 
+	beq $t2, '+', add #add if it is plus
+	bne $t2, '+', questionsubtract
+	
+	add: 
+	add $t3, $t0, $t1
+	
+		# Print \n
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, newline
+	syscall
+	
+	li	$v0,4		# print_string syscall code = 4
+		la	$a0, semanticsadd	
+		syscall
+		
+		
+	# Print \n
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, newline
+	syscall
+	 
+	# Print first digit
+	li	$v0,1		# print_int syscall code = 1
+	move	$a0, $t0	# int to print must be loaded into $a0
+	syscall
+	
+	# Print operator
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, plus
+	syscall
+	
+	# Print second digit
+	li	$v0,1		# print_int syscall code = 1
+	move	$a0, $t1	# int to print must be loaded into $a0
+	syscall
+	
+	# Print equals
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, equals
+	syscall
+	
+	# Print answer
+	li	$v0,1		# print_int syscall code = 1
+	move	$a0, $t3	# int to print must be loaded into $a0
+	syscall
+	
+	
+	li	$v0,10		# exit call
+		syscall
+	
+
+	
+	
+	questionsubtract: 
+	beq $t2, '-', subtract #subtract if it is minus
+	bne $t2, '-', questionmultiply
+	
+	subtract: 
+	sub $t3, $t0, $t1
+	
+		# Print \n
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, newline
+	syscall
+	
+	li	$v0,4		# print_string syscall code = 4
+		la	$a0, semanticssubtract	
+		syscall
+		
+		
+	# Print \n
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, newline
+	syscall
+	 
+	# Print first digit
+	li	$v0,1		# print_int syscall code = 1
+	move	$a0, $t0	# int to print must be loaded into $a0
+	syscall
+	
+	# Print operator
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, minus
+	syscall
+	
+	# Print second digit
+	li	$v0,1		# print_int syscall code = 1
+	move	$a0, $t1	# int to print must be loaded into $a0
+	syscall
+	
+	# Print equals
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, equals
+	syscall
+	
+	# Print answer
+	li	$v0,1		# print_int syscall code = 1
+	move	$a0, $t3	# int to print must be loaded into $a0
+	syscall
+	
+	
+	li	$v0,10		# exit call
+		syscall
+	
+	questionmultiply: 
+	beq $t2, '*', multiply #multiply if it is asterisk
+	bne $t2, '*', questiondivide
+	
+	
+	multiply: mul $t3, $t0, $t1
+	
+	# Print \n
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, newline
+	syscall
+	
+	li	$v0,4		# print_string syscall code = 4
+		la	$a0, semanticsmultiply	
+		syscall
+		
+		
+	# Print \n
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, newline
+	syscall
+	 
+	# Print first digit
+	li	$v0,1		# print_int syscall code = 1
+	move	$a0, $t0	# int to print must be loaded into $a0
+	syscall
+	
+	# Print operator
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, multiplysign
+	syscall
+	
+	# Print second digit
+	li	$v0,1		# print_int syscall code = 1
+	move	$a0, $t1	# int to print must be loaded into $a0
+	syscall
+	
+	# Print equals
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, equals
+	syscall
+	
+	# Print answer
+	li	$v0,1		# print_int syscall code = 1
+	move	$a0, $t3	# int to print must be loaded into $a0
+	syscall
+	
+	
+	li	$v0,10		# exit call
+		syscall
+		
+	
+	questiondivide:  
+	beq $t2, '/', divide
+	bne $t2, '/', questionmod
+	
+	divide: div $t0, $t1
+	mflo $t3
+		# Print \n
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, newline
+	syscall
+	
+	li	$v0,4		# print_string syscall code = 4
+		la	$a0, semanticssdivision	
+		syscall
+		
+		
+	# Print \n
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, newline
+	syscall
+	 
+	# Print first digit
+	li	$v0,1		# print_int syscall code = 1
+	move	$a0, $t0	# int to print must be loaded into $a0
+	syscall
+	
+	# Print operator
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, dividesign
+	syscall
+	
+	# Print second digit
+	li	$v0,1		# print_int syscall code = 1
+	move	$a0, $t1	# int to print must be loaded into $a0
+	syscall
+	
+	# Print equals
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, equals
+	syscall
+	
+	# Print answer
+	li	$v0,1		# print_int syscall code = 1
+	move	$a0, $t3	# int to print must be loaded into $a0
+	syscall
+	
+	
+	li	$v0,10		# exit call
+		syscall
+	questionmod: 
+	beq $t2, '%', modulus
+	bne $t2, '%', notoperator
+	
+	modulus: div $t0, $t1
+	mfhi $t3
+		 #getting the remainder, stored in $t3
+		# Print \n
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, newline
+	syscall
+	
+	li	$v0,4		# print_string syscall code = 4
+		la	$a0, semanticsmodular
+		syscall
+		
+		
+	# Print \n
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, newline
+	syscall
+	 
+	# Print first digit
+	li	$v0,1		# print_int syscall code = 1
+	move	$a0, $t0	# int to print must be loaded into $a0
+	syscall
+	
+	# Print operator
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, modular
+	syscall
+	
+	# Print second digit
+	li	$v0,1		# print_int syscall code = 1
+	move	$a0, $t1	# int to print must be loaded into $a0
+	syscall
+	
+	# Print equals
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, equals
+	syscall
+	
+	# Print answer
+	li	$v0,1		# print_int syscall code = 1
+	move	$a0, $t3	# int to print must be loaded into $a0
+	syscall
+	
+	
+	li	$v0,10		# exit call
+		syscall
+	
+	notoperator:
+	# Print \n
+	li	$v0,4		# print_string syscall code = 4
+	la	$a0, newline
+	syscall
+
+	
+	li	$v0,4		# print_string syscall code = 4
+		la	$a0, msg5	# load the address of msg5
+		syscall
+		li	$v0,10		# exit call
+		syscall
+		
+
+	# Start .data segment (data!)
+	.data
+msg1:	.asciiz	"Enter A:   "
+msg2:	.asciiz	"Enter B:   "
+msg6:   .asciiz "Enter an operator:   "
+
+msg4:   .asciiz "Division/modulus by zero is not allowed. "
+msg5:   .asciiz "Invalid operator!"
+newline:   .asciiz	"\n"
+semanticsadd: .asciiz  "The semantics of the operator + is addition."
+semanticssubtract: .asciiz  "The semantics of the operator - is subtraction."
+semanticssdivision: .asciiz  "The semantics of the operator - is division."
+semanticsmultiply: .asciiz  "The semantics of the operator * is multiplication."
+semanticsmodular: .asciiz  "The semantics of the operator % is modular."
+plus: .asciiz " + "
+minus: .asciiz " - "
+multiplysign: .asciiz " * "
+dividesign: .asciiz " / "
+modular: .asciiz " % "
+equals: .asciiz " = "
